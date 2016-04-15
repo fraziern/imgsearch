@@ -25,5 +25,9 @@
         "node": true,
         "mocha": true
     },
+    "globals": {
+        "chai": true,
+        "expect": true
+    },
     "extends": "eslint:recommended"
 }
