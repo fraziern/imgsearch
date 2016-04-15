@@ -1,0 +1,11 @@
+{
+  "name": "imgsearch",
+  "version": "1.0.0",
+  "description": "bing image search abstraction layer",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Nick Frazier",
+  "license": "ISC"
+}
