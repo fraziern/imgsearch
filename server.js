@@ -24,6 +24,8 @@ mongoose.connect(process.env.MONGODB_URI, function (err) {
   }
 });
 
+app.use(express.static(__dirname + '/public'));
+
 // ROUTES
 app.get('/', function (req, res) {
   res.send('Hi!');
