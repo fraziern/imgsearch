@@ -5,11 +5,11 @@ var mongoose = require('mongoose');
 require('dotenv').config();
 var config = require('./_config');
 var request = require('request');
+var resultsMap = require('./resultsMap');
 
 var app = express();
 
 var key = process.env.BING_KEY;
-// var user = process.env.BING_USER;
 
 var rootURI = 'https://api.datamarket.azure.com/Bing/Search/Image?Query=%27xbox%27&$format=json';
 var auth = 'Basic ' + new Buffer(key + ':' + key).toString('base64');
@@ -40,7 +40,7 @@ app.get('/test/', function (req, res) {
       }
     },
     function (err, response, body) {
-      res.json(body);
+      res.json(resultsMap(JSON.parse(body)));
     }
   );
 });
