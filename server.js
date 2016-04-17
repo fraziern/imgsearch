@@ -11,7 +11,9 @@ var app = express();
 
 var key = process.env.BING_KEY;
 
-var rootURI = 'https://api.datamarket.azure.com/Bing/Search/Image?Query=%27xbox%27&$format=json';
+var rootURI = 'https://api.datamarket.azure.com/Bing/Search/Image?Query=%27';
+var suffixURI = '%27&$format=json';
+var offsetURI = '&$skip=';
 var auth = 'Basic ' + new Buffer(key + ':' + key).toString('base64');
 
 // var Savedurl = require('./savedurl');
@@ -31,10 +33,13 @@ app.get('/', function (req, res) {
   res.send('Hi!');
 });
 
-app.get('/test/', function (req, res) {
+app.get('/api/imagesearch/:id', function (req, res) {
+  // console.log('id: ' + req.params.id);
+  // console.log('query: ' + JSON.stringify(req.query));
+  var offset = (req.query.offset) ? offsetURI + req.query.offset : '';
   request(
     {
-      url: rootURI,
+      url: rootURI + req.params.id + suffixURI + offset,
       headers: {
         'Authorization' : auth
       }
@@ -43,6 +48,10 @@ app.get('/test/', function (req, res) {
       res.json(resultsMap(JSON.parse(body)));
     }
   );
+});
+
+app.get('/api/latest/imagesearch', function (req, res) {
+  res.send('Hi again.');
 });
 
 var port = process.env.PORT || 8080;
