@@ -1,26 +1,24 @@
 process.env.NODE_ENV = 'test';
 
 var express = require('express');
+var app = express();
+
 var mongoose = require('mongoose');
+var Search = require('./search');
+
 require('dotenv').config();
 var config = require('./_config');
 var request = require('request');
+
 var resultsMap = require('./resultsMap');
 
-var app = express();
-
 var key = process.env.BING_KEY;
-
 var rootURI = 'https://api.datamarket.azure.com/Bing/Search/Image?Query=%27';
 var suffixURI = '%27&$format=json';
 var offsetURI = '&$skip=';
 var auth = 'Basic ' + new Buffer(key + ':' + key).toString('base64');
 
-// var Savedurl = require('./savedurl');
-// var Counter = require('./counter');
-//
-// var prefix = config.prefixURL[app.settings.env];
-
+// MONGODB CONNECTION
 mongoose.connect(config.mongoURI[app.settings.env], function (err) {
   if (err) {
     console.log('Error connecting to the database. ' + err);
@@ -29,6 +27,7 @@ mongoose.connect(config.mongoURI[app.settings.env], function (err) {
   }
 });
 
+// ROUTES
 app.get('/', function (req, res) {
   res.send('Hi!');
 });
@@ -45,15 +44,30 @@ app.get('/api/imagesearch/:id', function (req, res) {
       }
     },
     function (err, response, body) {
+      var search = new Search({
+        term: req.params.id,
+        when: new Date()
+      });
+      search.save(function (err) {
+        if (err) return console.error(err);
+      });
       res.json(resultsMap(JSON.parse(body)));
     }
   );
 });
 
 app.get('/api/latest/imagesearch', function (req, res) {
-  res.send('Hi again.');
+  Search.find()
+    .select('-_id -__v')
+    .limit(10)
+    .sort('-when')
+    .exec(function (err, searches) {
+      if (err) return console.error(err);
+      res.json(searches);
+    });
 });
 
+// START SERVER
 var port = process.env.PORT || 8080;
 app.listen(port,  function () {
   console.log('Node.js listening on port ' + port + '...');
