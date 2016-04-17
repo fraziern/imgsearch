@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = 'development';
 
 var express = require('express');
 var app = express();
@@ -19,7 +19,7 @@ var offsetURI = '&$skip=';
 var auth = 'Basic ' + new Buffer(key + ':' + key).toString('base64');
 
 // MONGODB CONNECTION
-mongoose.connect(config.mongoURI[app.settings.env], function (err) {
+mongoose.connect(process.env.MONGODB_URI, function (err) {
   if (err) {
     console.log('Error connecting to the database. ' + err);
   } else {
