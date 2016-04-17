@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'development';
-
 var express = require('express');
 var app = express();
 
@@ -7,7 +5,6 @@ var mongoose = require('mongoose');
 var Search = require('./search');
 
 require('dotenv').config();
-var config = require('./_config');
 var request = require('request');
 
 var resultsMap = require('./resultsMap');
@@ -23,7 +20,7 @@ mongoose.connect(process.env.MONGODB_URI, function (err) {
   if (err) {
     console.log('Error connecting to the database. ' + err);
   } else {
-    console.log('Connected to Database: ' + config.mongoURI[app.settings.env]);
+    console.log('Connected to Database: ' + process.env.MONGODB_URI);
   }
 });
 
